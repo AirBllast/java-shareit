@@ -10,8 +10,7 @@ import java.util.Optional;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
-    private static final Map<Long, Item> items = new HashMap<>();
-
+    private final Map<Long, Item> items = new HashMap<>();
 
     @Override
     public Item add(Item item) {
@@ -27,8 +26,8 @@ public class ItemRepositoryImpl implements ItemRepository {
         return items.values().stream()
                 .filter(item -> Boolean.TRUE.equals(item.getAvailable()))
                 .filter(item ->
-                        (item.getName() != null && item.getName().toLowerCase().contains(lowerCaseText)) ||
-                                (item.getDescription() != null && item.getDescription().toLowerCase().contains(lowerCaseText))
+                        item.getName().toLowerCase().contains(lowerCaseText) ||
+                                item.getDescription().toLowerCase().contains(lowerCaseText)
                 )
                 .toList();
     }
