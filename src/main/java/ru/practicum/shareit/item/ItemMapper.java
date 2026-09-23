@@ -1,38 +1,43 @@
 package ru.practicum.shareit.item;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Component
+@NoArgsConstructor
 public class ItemMapper {
 
-    public static ItemDto mapToItemDto(Item item) {
+    public ItemDto mapToItemDto(Item item) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getRequest()
+                item.getRequestId(),
+                null,
+                null,
+                null
         );
     }
 
-    public static Item mapToItem(ItemDto itemDto, Long ownerId) {
+    public Item mapToItem(ItemDto itemDto, User owner) {
         Item item = new Item();
         item.setId(itemDto.getId());
-        item.setOwnerId(ownerId);
+        item.setOwner(owner);
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
-        item.setRequest(itemDto.getRequest());
+        item.setRequestId(itemDto.getRequestId());
         return item;
     }
 
-    public static List<ItemDto> mapToItemDto(Iterable<Item> items) {
+    public List<ItemDto> mapToItemDto(Iterable<Item> items) {
         if (items == null) {
             return List.of();
         }

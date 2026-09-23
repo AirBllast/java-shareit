@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +21,13 @@ public class ItemDto {
     @NotBlank(message = "Описание не должно быть пустым")
     private String description;
 
-    @NonNull
     private Boolean available;
 
-    private Long request;
+    private Long requestId;
+
+    private List<CommentDto> comments;
+
+    private BookingShortDto lastBooking;
+
+    private BookingShortDto nextBooking;
 }
