@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -99,14 +100,15 @@ public class BookingServiceImpl implements BookingService {
         }
 
         LocalDateTime now = LocalDateTime.now();
+        Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
 
         List<Booking> bookings = switch (stateCheck(state)) {
-            case CURRENT -> bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, now, now);
-            case PAST -> bookingRepository.findByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, now);
-            case FUTURE -> bookingRepository.findByBooker_IdAndStartIsAfterOrderByStartDesc(userId, now);
-            case WAITING -> bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.WAITING);
-            case REJECTED -> bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.REJECTED);
-            default -> bookingRepository.findByBooker_IdOrderByStartDesc(userId);
+            case CURRENT -> bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
+            case PAST -> bookingRepository.findByBooker_IdAndEndIsBefore(userId, now, sortByStartDesc);
+            case FUTURE -> bookingRepository.findByBooker_IdAndStartIsAfter(userId, now, sortByStartDesc);
+            case WAITING -> bookingRepository.findByBooker_IdAndStatus(userId, Status.WAITING, sortByStartDesc);
+            case REJECTED -> bookingRepository.findByBooker_IdAndStatus(userId, Status.REJECTED, sortByStartDesc);
+            case ALL -> bookingRepository.findByBooker_Id(userId, sortByStartDesc);
         };
         return bookingMapper.mapToBookingDtoList(bookings);
     }
@@ -118,14 +120,15 @@ public class BookingServiceImpl implements BookingService {
         }
 
         LocalDateTime now = LocalDateTime.now();
+        Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
 
         List<Booking> bookings = switch (stateCheck(state)) {
-            case CURRENT -> bookingRepository.findByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, now, now);
-            case PAST -> bookingRepository.findByItem_Owner_IdAndEndIsBeforeOrderByStartDesc(userId, now);
-            case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartIsAfterOrderByStartDesc(userId, now);
-            case WAITING -> bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.WAITING);
-            case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED);
-            default -> bookingRepository.findByItem_Owner_IdOrderByStartDesc(userId);
+            case CURRENT -> bookingRepository.findByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
+            case PAST -> bookingRepository.findByItem_Owner_IdAndEndIsBefore(userId, now, sortByStartDesc);
+            case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartIsAfter(userId, now, sortByStartDesc);
+            case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(userId, Status.WAITING, sortByStartDesc);
+            case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(userId, Status.REJECTED, sortByStartDesc);
+            case ALL -> bookingRepository.findByItem_Owner_Id(userId, sortByStartDesc);
         };
         return bookingMapper.mapToBookingDtoList(bookings);
     }

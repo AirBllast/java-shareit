@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -63,6 +64,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Предмет с id = " + itemId + " не найден"));
 
+        Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
+        Sort sortByStartAsc = Sort.by(Sort.Direction.ASC, "start");
         ItemDto itemDto = itemMapper.mapToItemDto(item);
 
 
@@ -73,10 +76,10 @@ public class ItemServiceImpl implements ItemService {
         if (item.getOwner().getId().equals(userId)) {
             LocalDateTime now = LocalDateTime.now();
 
-            bookingRepository.findFirstByItem_IdAndStatusAndStartLessThanEqualOrderByStartDesc(itemId, Status.APPROVED, now)
+            bookingRepository.findFirstByItem_IdAndStatusAndStartLessThanEqual(itemId, Status.APPROVED, now, sortByStartDesc)
                     .ifPresent(b -> itemDto.setLastBooking(bookingMapper.mapToBookingShortDto(b)));
 
-            bookingRepository.findFirstByItem_IdAndStatusAndStartGreaterThanOrderByStartAsc(itemId, Status.APPROVED, now)
+            bookingRepository.findFirstByItem_IdAndStatusAndStartGreaterThan(itemId, Status.APPROVED, now, sortByStartAsc)
                     .ifPresent(b -> itemDto.setNextBooking(bookingMapper.mapToBookingShortDto(b)));
         }
 
@@ -95,19 +98,23 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
 
         LocalDateTime now = LocalDateTime.now();
+        Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
 
-        List<Booking> allBookings = bookingRepository.findByItem_IdInAndStatusOrderByStartDesc(itemIds, Status.APPROVED);
-
+        List<Booking> allBookings = bookingRepository.findByItem_IdInAndStatus(itemIds, Status.APPROVED, sortByStartDesc);
         Map<Long, List<Booking>> bookingsByItem = allBookings.stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId()));
+
+        List<Comment> allComments = commentRepository.findByItem_IdIn(itemIds);
+        Map<Long, List<Comment>> commentsByItem = allComments.stream()
+                .collect(Collectors.groupingBy(comment -> comment.getItem().getId()));
 
         List<ItemDto> result = new ArrayList<>();
 
         for (Item item : items) {
             ItemDto dto = itemMapper.mapToItemDto(item);
 
-            List<Comment> comments = commentRepository.findByItem_Id(item.getId());
-            dto.setComments(commentMapper.mapToCommentDtoList(comments));
+            List<Comment> itemComments = commentsByItem.getOrDefault(item.getId(), Collections.emptyList());
+            dto.setComments(commentMapper.mapToCommentDtoList(itemComments));
 
             List<Booking> itemBookings = bookingsByItem.getOrDefault(item.getId(), Collections.emptyList());
 
@@ -169,8 +176,9 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
+
         boolean hasCompletedBooking = bookingRepository
-                .existsByBooker_IdAndItem_IdAndStatusAndEndIsBefore(userId, itemId, Status.APPROVED, LocalDateTime.now());
+                .existsByBooker_IdAndItem_IdAndStatusAndStartLessThanEqual(userId, itemId, Status.APPROVED, LocalDateTime.now());
 
         if (!hasCompletedBooking) {
             throw new ValidationException("Оставить отзыв может только арендатор с завершённым бронированием");

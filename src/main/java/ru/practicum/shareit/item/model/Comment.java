@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "comments")
 @Getter
 @Setter
-@ToString
+@EqualsAndHashCode(of = "id")
 public class Comment {
 
     @Id
@@ -31,15 +31,4 @@ public class Comment {
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Comment comment)) return false;
-        return id != null && id.equals(comment.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-}
+ }

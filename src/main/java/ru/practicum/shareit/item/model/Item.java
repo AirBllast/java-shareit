@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.model.User;
 @Table(name = "items")
 @Getter
 @Setter
-@ToString
+@EqualsAndHashCode(of = "id")
 public class Item {
 
     @Id
@@ -25,15 +25,4 @@ public class Item {
     private Boolean available;
     private Long requestId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Item item)) return false;
-        return id != null && id.equals(item.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
