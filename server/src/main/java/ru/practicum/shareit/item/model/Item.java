@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 @Entity
@@ -9,6 +10,9 @@ import ru.practicum.shareit.user.model.User;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
 
     @Id
@@ -23,6 +27,9 @@ public class Item {
     private String name;
     private String description;
     private Boolean available;
-    private Long requestId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
 }

@@ -1,10 +1,7 @@
 package ru.practicum.shareit.user.model;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
@@ -12,6 +9,9 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id

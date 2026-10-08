@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User update(Long id, UserDto userDto) {
+    public UserDto update(Long id, UserDto userDto) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + id + " не найден"));
 
@@ -35,17 +35,18 @@ public class UserServiceImpl implements UserService {
             existingUser.setName(userDto.getName());
         }
 
-        return userRepository.save(existingUser);
+        return userMapper.mapToUserDto(userRepository.save(existingUser));
     }
 
     @Override
     @Transactional
-    public User add(UserDto userDto) {
+    public UserDto add(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new DuplicatedDataException("Пользователь с email = " + userDto.getEmail() + " уже существует");
         }
         User user = userMapper.mapToUser(userDto);
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return userMapper.mapToUserDto(savedUser);
     }
 
     @Override

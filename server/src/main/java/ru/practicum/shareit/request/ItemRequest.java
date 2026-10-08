@@ -3,17 +3,14 @@ package ru.practicum.shareit.request;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import ru.practicum.shareit.user.model.User;
 
-/**
- * TODO Sprint add-item-requests.
- */
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "item_requests")
 @Getter
 @Setter
-@ToString
 public class ItemRequest {
 
     @Id
@@ -25,4 +22,7 @@ public class ItemRequest {
     @ManyToOne
     @JoinColumn(name = "requester_id")
     private User requester;
+
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
 }
