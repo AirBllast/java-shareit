@@ -42,14 +42,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public Collection<ItemRequestDto> getUserRequests(Long userId) {
         checkUserId(userId);
-        Sort sortByCreatedDesc = Sort.by(Sort.Direction.DESC, "created");
+        Sort sortByCreatedDesc = Sort.by(Sort.Direction.DESC, "created")
+                .and(Sort.by(Sort.Direction.DESC, "id"));
         return toDtos(itemRequestRepository.findAllByRequesterId(userId, sortByCreatedDesc));
     }
 
     @Override
     public Collection<ItemRequestDto> getAllRequests(Long userId) {
         checkUserId(userId);
-        Sort sortByCreatedDesc = Sort.by(Sort.Direction.DESC, "created");
+        Sort sortByCreatedDesc = Sort.by(Sort.Direction.DESC, "created")
+                .and(Sort.by(Sort.Direction.DESC, "id"));
         return toDtos(itemRequestRepository.findAllByRequesterIdNot(userId, sortByCreatedDesc));
     }
 

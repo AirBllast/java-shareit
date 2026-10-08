@@ -187,7 +187,7 @@ public class ItemServiceImpl implements ItemService {
 
 
         boolean hasCompletedBooking = bookingRepository
-                .existsByBooker_IdAndItem_IdAndStatusAndStartLessThanEqual(userId, itemId, Status.APPROVED, LocalDateTime.now());
+                .existsByBooker_IdAndItem_IdAndStatusAndEndLessThanEqual(userId, itemId, Status.APPROVED, LocalDateTime.now());
 
         if (!hasCompletedBooking) {
             throw new ValidationException("Оставить отзыв может только арендатор с завершённым бронированием");

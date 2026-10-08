@@ -87,42 +87,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUserWhenInvalidEmailStatus400() throws Exception {
-        UserDto dto = createUserDto(userId, "Updated Name", "invalid-email");
-
-        mockMvc.perform(patch("/users/{userId}", userId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userClient);
-    }
-
-    @Test
-    public void updateUserWhenBlankEmailStatus400() throws Exception {
-        UserDto dto = createUserDto(userId, "Updated Name", "   ");
-
-        mockMvc.perform(patch("/users/{userId}", userId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userClient);
-    }
-
-    @Test
-    public void updateUserWhenBlankNameStatus400() throws Exception {
-        UserDto dto = createUserDto(userId, "  ", "updated@example.com");
-
-        mockMvc.perform(patch("/users/{userId}", userId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userClient);
-    }
-
-    @Test
     public void getUserByIdWhenValidStatus200() throws Exception {
         UserDto dto = createUserDto(userId, "Ivan Ivanov", "ivan@example.com");
 

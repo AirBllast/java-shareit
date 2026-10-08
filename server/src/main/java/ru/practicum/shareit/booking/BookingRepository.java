@@ -32,7 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByItem_IdInAndStatus(List<Long> itemIds, Status status, Sort sort);
 
-    boolean existsByBooker_IdAndItem_IdAndStatusAndStartLessThanEqual(Long bookerId, Long itemId, Status status, LocalDateTime now);
+    boolean existsByBooker_IdAndItem_IdAndStatusAndEndLessThanEqual(Long bookerId, Long itemId, Status status, LocalDateTime now);
 
     Optional<Booking> findFirstByItem_IdAndStatusAndStartLessThanEqual(Long itemId, Status status, LocalDateTime now, Sort sort);
 

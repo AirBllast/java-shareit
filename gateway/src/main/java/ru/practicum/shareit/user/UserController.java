@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable @Positive Long id, @Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<Object> updateUser(@PathVariable @Positive Long id, @RequestBody UserDto userDto) {
         return userClient.updateUser(id, userDto);
     }
 }
