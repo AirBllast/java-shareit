@@ -14,7 +14,7 @@ import lombok.*;
 public class BookItemRequestDto {
 
 	@NotNull
-	private long itemId;
+	private Long itemId;
 
 	@NotNull
 	@FutureOrPresent
